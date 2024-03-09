@@ -1,6 +1,29 @@
 from flask import Flask, request, abort, jsonify
 import uuid
 
+""" 
+Project One
+In Memory Kanban
+Welcome to project 1, first you're going to be dealing with an inmemory kanban
+this means there is no database stuff just yet, we're going to keep it very simple for now
+
+What we're interested in right now is setting up a REST API which performs CRUD operations
+
+C - Create a specific task for the kanban board, the shape of the task should be
+
+{
+id: 'give it a unique uuid using the uuid import'
+progress: 'give it a progress which can be either 'todo', 'inprogress' or 'done'
+message: 'give it a message which represents what job it is for example 'taking out the trash''
+}
+
+R - Read the current state of the kanban board, this is self explanatory, it should just display the current state of the kanban board
+
+U - Update the job, this should update the currently stored job on the kanban board regardless of its position, given the id
+
+D - Delete the job, this should delete the currently stored job on the kanban board given the id
+
+"""
 app = Flask(__name__)
 
 kanban = {
@@ -16,70 +39,18 @@ def hello_world():
 @app.route("/kanban", methods=['GET'])
 def view_kanban():
     """ return the kanban board """
-    if request.method == 'GET':
-        return kanban
 
 @app.post('/create-job')
 def create_job():
     """ create the job """
-    data = request.get_json()
-    """ probably perform some validation here """
-    # we want the message and which stage of progress it is
-    message = data["message"]
-    if "progress" in data:
-        progress = data["progress"]
-        new_job = {
-        "id": uuid.uuid1(),
-        "progress" : progress,
-        "message" : message
-        }
-        kanban[progress].append(new_job)
-        return jsonify(kanban)
-    else:
-        abort(403, description="no progress given for job")
+
+    """ README: perform a CREATE of the item here"""
 
 @app.route('/job', methods=['PUT', 'DELETE'])
 def modify_job():
-    if request.method == 'PUT': # handle get requests
-        data = request.get_json()
-        print("data: ", data)
-        id = data["id"]
-        progress = data["progress"]
-        # if its the same, then do not do anything
-        # remove any previous job in another category
-
-        # if progress not in keys then return error
-
-        if progress not in kanban:
-            abort(403, description="Invalid progress value")
-
-        for key in kanban:
-            category = kanban[key]
-            print(kanban)
-            for item in category:
-                print("item: ", item, " did it ever complete")
-                print("convered to string: ", str(item["id"]))
-                # match by id
-                if str(item["id"]) == id:
-                    category.remove(item)
-                    # there will only be one of this so we can perform an early exit
-                    kanban[progress].append(data)
-                    return jsonify(kanban)
-        # if we didn't find it then return error
-        abort(404, description="job not found!")
-    else: # handle delete
-        data = request.get_json()
-        print("data: ", data)
-        id = data["id"]
-        progress = data["progress"]
-        category = kanban[progress]
-        for item in category:
-            if str(item["id"]) == id:
-                # remove the item
-                category.remove(item)
-                # return
-                return jsonify(kanban)
-        abort(404, description="job not be found!")
-        
+    if request.method == 'PUT': # handle put requests
+        """ README: perform an UPDATE of the item here"""
+    else: # handle delete requests
+        """ README: perform a DELETE of that item here """
 
 
